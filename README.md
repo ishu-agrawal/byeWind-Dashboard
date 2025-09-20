@@ -1,4 +1,4 @@
-# DataHive2 SaaS Dashboard
+# ByeWind SaaS Dashboard
 
 A modern, responsive SaaS dashboard built with React 19, Vite 7, and Tailwind CSS v4. This project recreates the ByeWind dashboard design with pixel-perfect accuracy, complete with interactive features, dark/light theme toggle, and smooth animations.
 
@@ -75,13 +75,14 @@ The built files will be in the `dist/` directory, ready for deployment.
 ```
 datahive2/
 ├── src/
-│   ├── components/           # React components
-│   │   ├── Sidebar.jsx      # Navigation sidebar
-│   │   ├── Header.jsx       # Top header with search/theme
-│   │   ├── Dashboard.jsx    # Main analytics dashboard
-│   │   ├── OrderList.jsx    # Orders table with pagination
-│   │   ├── ActivityFeed.jsx # Activity timeline
-│   │   └── ContactsList.jsx # Contacts with status
+│   ├── components/                 # React components
+│   │   ├── Sidebar.jsx             # Navigation sidebar
+│   │   ├── Header.jsx              # Top header with search/theme
+│   │   ├── Dashboard.jsx           # Main analytics dashboard
+│   │   ├── OrderList.jsx           # Orders table with pagination
+│   │   ├── ActivityFeed.jsx        # Activity timeline
+│   │   ├── ContactsList.jsx        # Contacts with status
+│   │   └── NotificationPanel.jsx   # Notifications with activities and contacts 
 │   ├── context/             # React context
 │   │   └── ThemeContext.jsx # Theme management
 │   ├── data/                # Sample data
