@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Bell, Settings, Sun, Moon, X } from 'lucide-react';
-import { notifications, activities, contacts } from '../data/constants';
 
 const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotifications, setShowNotifications }) => {
   const notificationRef = useRef(null);
@@ -16,31 +15,6 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const getActivityIcon = (user) => {
-    const iconColors = {
-      'You': 'bg-blue-500',
-      'Released': 'bg-green-500',
-      'Submitted': 'bg-yellow-500',
-      'Modified': 'bg-purple-500',
-      'Deleted': 'bg-red-500'
-    };
-    return iconColors[user] || 'bg-gray-500';
-  };
-
-  const getContactInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
-
-  const getContactColor = (name) => {
-    const colors = [
-      'bg-blue-500', 'bg-green-500', 'bg-purple-500', 
-      'bg-pink-500', 'bg-indigo-500', 'bg-red-500',
-      'bg-yellow-500', 'bg-teal-500'
-    ];
-    const index = name.length % colors.length;
-    return colors[index];
-  };
 
   return (
     <header className={`h-16 ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-b px-6 flex items-center justify-between transition-colors duration-200 sticky top-0 z-40`}>
@@ -86,7 +60,7 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
           aria-label="Toggle theme"
         >
           {isDark ? (
-            <Sun className="w-5 h-5 text-yellow-500" />
+            <Sun className="w-5 h-5 text-white" />
           ) : (
             <Moon className="w-5 h-5" />
           )}

@@ -1,32 +1,27 @@
 import React from 'react';
 import { 
-  Home, FolderOpen, BookOpen, User, Building2, 
-  FileText, MessageSquare, ChevronDown 
+  BookOpen, IdCardLanyard, Building2, IdCard,
+  NotebookTabs, MessagesSquare, ChevronDown, ChevronRight, PieChart, CreditCard, FolderClosed,
 } from 'lucide-react';
 
 const Sidebar = ({ activeView, setActiveView, isDark }) => {
-  const menuItems = [
-    { id: 'overview', icon: Home, label: 'Overview', hasSubItems: false },
-    { id: 'projects', icon: FolderOpen, label: 'Projects', hasSubItems: true },
-    { id: 'online-courses', icon: BookOpen, label: 'Online Courses', hasSubItems: false }
-  ];
 
   const pageItems = [
-    { id: 'user-profile', icon: User, label: 'User Profile', hasSubItems: true },
-    { id: 'account', icon: User, label: 'Account', hasSubItems: false },
+    { id: 'user-profile', icon: IdCardLanyard, label: 'User Profile', hasSubItems: true },
+    { id: 'account', icon: IdCard, label: 'Account', hasSubItems: false },
     { id: 'corporate', icon: Building2, label: 'Corporate', hasSubItems: false },
-    { id: 'blog', icon: FileText, label: 'Blog', hasSubItems: false },
-    { id: 'social', icon: MessageSquare, label: 'Social', hasSubItems: false }
+    { id: 'blog', icon: NotebookTabs, label: 'Blog', hasSubItems: false },
+    { id: 'social', icon: MessagesSquare, label: 'Social', hasSubItems: false }
   ];
 
-  const SidebarButton = ({ id, label, isActive, onClick, icon: Icon, hasSubItems, hasDot, dotColor = 'bg-gray-400' }) => (
+  const SidebarButton = ({ id, label, isActive, onClick, icon: Icon, hasSubItems, hasChevron }) => (
     <button
       onClick={() => onClick(id)}
       className={`sidebar-item ${isActive ? 'sidebar-item-active' : 'sidebar-item-inactive'} group`}
     >
-      {hasDot && <span className={`w-2 h-2 ${dotColor} rounded-full mr-3 group-hover:scale-110 transition-transform`}></span>}
-      {Icon && <Icon className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />}
-      <span className="flex-1 text-left">{label}</span>
+      {hasChevron &&<ChevronRight className={`w-4 h-4 transition-transform`} />}
+      {Icon && <Icon className={`w-4 h-4 mr-3 group-hover:scale-110 ${isDark ? 'text-gray-400' : 'text-gray-600'} transition-transform`} />}
+      <span className={`flex-1 text-left ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{label}</span>
       {hasSubItems && (
         <ChevronDown className={`w-4 h-4 transition-transform ${isActive ? 'rotate-180' : ''}`} />
       )}
@@ -48,8 +43,8 @@ const Sidebar = ({ activeView, setActiveView, isDark }) => {
 
         {/* Favorites Section */}
         <div className="mb-6">
-          <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider`}>
-            Favorites
+          <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} tracking-wider`}>
+            Favorites Recently
           </p>
           <div className="space-y-1">
             <SidebarButton
@@ -68,7 +63,7 @@ const Sidebar = ({ activeView, setActiveView, isDark }) => {
         </div>
 
         {/* Recently Section */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider`}>
             Recently
           </p>
@@ -86,11 +81,11 @@ const Sidebar = ({ activeView, setActiveView, isDark }) => {
               onClick={setActiveView}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Dashboards Section */}
         <div className="mb-6">
-          <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider`}>
+          <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} tracking-wider`}>
             Dashboards
           </p>
           <div className="space-y-1">
@@ -99,37 +94,38 @@ const Sidebar = ({ activeView, setActiveView, isDark }) => {
               label="Default"
               isActive={activeView === 'default'}
               onClick={setActiveView}
-              hasDot={true}
-              dotColor="bg-blue-600"
+              icon={PieChart}
             />
             <SidebarButton
               id="ecommerce"
               label="eCommerce"
               isActive={activeView === 'ecommerce'}
               onClick={setActiveView}
-              hasDot={true}
-              dotColor={activeView === 'ecommerce' ? 'bg-blue-600' : 'bg-gray-400'}
+              hasChevron={true}
+              icon={CreditCard}
             />
             <SidebarButton
               id="projects"
               label="Projects"
               isActive={activeView === 'projects'}
               onClick={setActiveView}
-              hasDot={true}
+              hasChevron={true}
+              icon={FolderClosed}
             />
             <SidebarButton
               id="online-courses"
               label="Online Courses"
               isActive={activeView === 'online-courses'}
               onClick={setActiveView}
-              hasDot={true}
+              hasChevron={true}
+              icon={BookOpen}
             />
           </div>
         </div>
 
         {/* Pages Section */}
         <div>
-          <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider`}>
+          <p className={`text-xs font-medium mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} tracking-wider`}>
             Pages
           </p>
           <div className="space-y-1">

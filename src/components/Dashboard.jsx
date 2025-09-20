@@ -60,45 +60,46 @@ const CustomTooltip = ({ active, payload, label, isDark }) => {
 const Dashboard = ({ isDark }) => {
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Customers" 
-          value="3,781" 
-          change="+11.01%" 
-          changeType="up"
-          isDark={isDark}
-        />
-        <StatCard 
-          title="Orders" 
-          value="1,219" 
-          change="-0.03%" 
-          changeType="down"
-          isDark={isDark}
-        />
-        <StatCard 
-          title="Revenue" 
-          value="$695" 
-          change="+15.03%" 
-          changeType="up"
-          isDark={isDark}
-        />
-        <StatCard 
-          title="Growth" 
-          value="30.1%" 
-          change="+6.08%" 
-          changeType="up"
-          isDark={isDark}
-        />
-      </div>
+      {/* First Row: Stats Cards + Projections vs Actuals */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Stats Cards in 2x2 Grid - Equal width container */}
+        <div className="grid grid-cols-2 gap-4 h-full">
+          <StatCard 
+            title="Customers" 
+            value="3,781" 
+            change="+11.01%" 
+            changeType="up"
+            isDark={isDark}
+          />
+          <StatCard 
+            title="Orders" 
+            value="1,219" 
+            change="-0.03%" 
+            changeType="down"
+            isDark={isDark}
+          />
+          <StatCard 
+            title="Revenue" 
+            value="$695" 
+            change="+15.03%" 
+            changeType="up"
+            isDark={isDark}
+          />
+          <StatCard 
+            title="Growth" 
+            value="30.1%" 
+            change="+6.08%" 
+            changeType="up"
+            isDark={isDark}
+          />
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Projections vs Actuals */}
+        {/* Projections vs Actuals - Equal width container */}
         <div className={`p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Projections vs Actuals
           </h3>
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={280}>
             <BarChart data={projectionData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#f0f0f0'} />
               <XAxis 
@@ -124,8 +125,130 @@ const Dashboard = ({ isDark }) => {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
 
-        {/* Top Selling Products */}
+      {/* Second Row: Revenue Chart + Revenue by Location */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Revenue Chart - 2 columns */}
+        <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Revenue
+            </h3>
+            <div className="flex items-center space-x-6 text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-black rounded-full"></div>
+                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+                  Current Week $58,211
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+                  Previous Week $68,768
+                </span>
+              </div>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={revenueData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#E5E7EB'} />
+              <XAxis 
+                dataKey="month" 
+                stroke={isDark ? '#9CA3AF' : '#9CA3AF'} 
+                fontSize={11}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: isDark ? '#9CA3AF' : '#6B7280' }}
+              />
+              <YAxis 
+                stroke={isDark ? '#9CA3AF' : '#9CA3AF'} 
+                fontSize={11}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: isDark ? '#9CA3AF' : '#6B7280' }}
+                tickFormatter={(value) => `${(value / 1000)}K`}
+                domain={[0, 80000]}
+                ticks={[0, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000]}
+              />
+              <Tooltip content={<CustomTooltip isDark={isDark} />} />
+              <Line 
+                type="monotone" 
+                dataKey="current" 
+                stroke="#000000" 
+                strokeWidth={3} 
+                dot={false}
+                activeDot={{ r: 4, fill: '#000000' }}
+                name="Current Week"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="previous" 
+                stroke="#9CA3AF" 
+                strokeWidth={2} 
+                strokeDasharray="8 4" 
+                dot={false}
+                name="Previous Week"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Revenue by Location - 1 column */}
+        <div className={`p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
+          <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Revenue by Location
+          </h3>
+          
+          {/* World Map with dots */}
+          <div className="relative mb-6 h-20 bg-gradient-to-br from-blue-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg overflow-hidden">
+            {/* World map background */}
+            <div className="absolute inset-0 opacity-20">
+              <svg viewBox="0 0 200 100" className="w-full h-full">
+                {/* Simplified world map paths */}
+                <path d="M20,40 Q30,35 40,40 L50,45 Q60,40 70,45 L80,40 Q90,45 100,40 L110,45 Q120,40 130,45 L140,40 Q150,45 160,40 L170,45 Q180,40 190,45" 
+                      stroke={isDark ? '#4B5563' : '#9CA3AF'} 
+                      strokeWidth="1" 
+                      fill="none"/>
+                <path d="M10,60 Q25,55 40,60 L60,65 Q80,60 100,65 L120,60 Q140,65 160,60 L180,65" 
+                      stroke={isDark ? '#4B5563' : '#9CA3AF'} 
+                      strokeWidth="1" 
+                      fill="none"/>
+              </svg>
+            </div>
+            {/* Location dots */}
+            <div className="absolute top-3 left-8 w-2 h-2 bg-blue-500 rounded-full shadow-sm"></div>
+            <div className="absolute top-4 right-12 w-2 h-2 bg-green-500 rounded-full shadow-sm"></div>
+            <div className="absolute bottom-4 left-16 w-2 h-2 bg-yellow-500 rounded-full shadow-sm"></div>
+            <div className="absolute bottom-3 right-8 w-2 h-2 bg-purple-500 rounded-full shadow-sm"></div>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { city: 'New York', amount: '72K', color: 'bg-blue-500' },
+              { city: 'San Francisco', amount: '39K', color: 'bg-green-500' },
+              { city: 'Sydney', amount: '25K', color: 'bg-yellow-500' },
+              { city: 'Singapore', amount: '61K', color: 'bg-purple-500' }
+            ].map((location, index) => (
+              <div key={index} className="flex items-center justify-between group cursor-pointer py-1">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-2 h-2 rounded-full ${location.color} group-hover:scale-125 transition-transform`}></div>
+                  <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} group-hover:text-blue-600 transition-colors`}>
+                    {location.city}
+                  </span>
+                </div>
+                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {location.amount}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Third Row: Top Selling Products + Total Sales */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Top Selling Products - 2 columns */}
         <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Top Selling Products
@@ -167,132 +290,26 @@ const Dashboard = ({ isDark }) => {
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Chart */}
-        <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
-          <div className="flex items-center justify-between mb-6">
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Revenue
-            </h3>
-            <div className="flex items-center space-x-6 text-sm">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-black rounded-full"></div>
-                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
-                  Current Week $58,211
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
-                  Previous Week $68,768
-                </span>
-              </div>
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" height={280}>
-            <LineChart data={revenueData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#f0f0f0'} />
-              <XAxis 
-                dataKey="month" 
-                stroke={isDark ? '#9CA3AF' : '#9CA3AF'} 
-                fontSize={12}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis 
-                stroke={isDark ? '#9CA3AF' : '#9CA3AF'} 
-                fontSize={12}
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(value) => `${(value / 1000)}K`}
-              />
-              <Tooltip content={<CustomTooltip isDark={isDark} />} />
-              <Line 
-                type="monotone" 
-                dataKey="current" 
-                stroke="#000000" 
-                strokeWidth={2} 
-                dot={false}
-                activeDot={{ r: 4, fill: '#000000' }}
-                name="Current Week"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="previous" 
-                stroke="#9CA3AF" 
-                strokeWidth={2} 
-                strokeDasharray="5 5" 
-                dot={false}
-                name="Previous Week"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Revenue by Location */}
-        <div className={`p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
-          <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Revenue by Location
-          </h3>
-          
-          {/* World Map Placeholder */}
-          <div className="relative mb-6 h-32 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-600 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-2 bg-blue-200 dark:bg-gray-500 rounded-full flex items-center justify-center">
-                <span className="text-2xl">🌍</span>
-              </div>
-              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>World Map</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              { city: 'New York', amount: '72K', percentage: 40 },
-              { city: 'San Francisco', amount: '39K', percentage: 30 },
-              { city: 'Sydney', amount: '25K', percentage: 20 },
-              { city: 'Singapore', amount: '61K', percentage: 35 }
-            ].map((location, index) => (
-              <div key={index} className="flex items-center justify-between group cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    index === 0 ? 'bg-blue-500' : 
-                    index === 1 ? 'bg-green-500' : 
-                    index === 2 ? 'bg-yellow-500' : 'bg-purple-500'
-                  } group-hover:scale-125 transition-transform`}></div>
-                  <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} group-hover:text-blue-600 transition-colors`}>
-                    {location.city}
-                  </span>
-                </div>
-                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {location.amount}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-
-      {/* Total Sales */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Total Sales - 1 column */}
         <div className={`p-6 rounded-xl ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Total Sales
           </h3>
           <div className="flex flex-col items-center">
-            <div className="relative">
-              <ResponsiveContainer width={200} height={200}>
+            <div className="relative mb-6">
+              <ResponsiveContainer width={180} height={180}>
                 <PieChart>
                   <Pie
                     data={salesData}
-                    cx={100}
-                    cy={100}
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={2}
+                    cx={90}
+                    cy={90}
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={3}
                     dataKey="value"
+                    startAngle={90}
+                    endAngle={450}
                   >
                     {salesData.map((entry, index) => (
                       <Cell 
@@ -302,33 +319,36 @@ const Dashboard = ({ isDark }) => {
                       />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    content={<CustomTooltip isDark={isDark} />}
-                    formatter={(value, name) => [`${value}%`, name]}
-                  />
                 </PieChart>
               </ResponsiveContainer>
+              {/* Center percentage with background */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <p className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>38.6%</p>
+                <div className={`px-3 py-2 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-100'} shadow-sm`}>
+                  <p className={`text-sm font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>38.6%</p>
                 </div>
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-x-8 gap-y-2 w-full mt-6">
-              {salesData.map((item, index) => (
+            {/* Legend with proper styling */}
+            <div className="w-full space-y-3">
+              {[
+                { name: 'Direct', value: '$300.56', color: '#000000' },
+                { name: 'Affiliate', value: '$135.18', color: '#10B981' },
+                { name: 'Sponsored', value: '$154.02', color: '#3B82F6' },
+                { name: 'E-mail', value: '$48.96', color: '#06B6D4' }
+              ].map((item, index) => (
                 <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3">
                     <div 
                       className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                       {item.name}
                     </span>
                   </div>
-                  <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    ${item.value * 10}K
+                  <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {item.value}
                   </span>
                 </div>
               ))}

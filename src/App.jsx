@@ -4,8 +4,6 @@ import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import OrderList from './components/OrderList';
 import NotificationPanel from './components/NotificationPanel';
-import ActivityFeed from './components/ActivityFeed';
-import ContactsList from './components/ContactsList';
 import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
@@ -26,7 +24,6 @@ function App() {
   const [activeView, setActiveView] = useState('ecommerce');
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
-  
 
   const toggleTheme = () => {
     const newTheme = !isDark;
@@ -67,19 +64,14 @@ function App() {
             />
             
             <main className="p-6">
-              {activeView === 'ecommerce' ? (
+              {activeView === 'default' ? (
                 <div>
                   <div className="mb-6">
                     <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       eCommerce
                     </h1>
                   </div>
-                  
-                  <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-                    <div className="xl:col-span-6">
-                      <Dashboard isDark={isDark} />
-                    </div>
-                  </div>
+                  <Dashboard isDark={isDark} />
                 </div>
               ) : activeView === 'projects' ? (
                 <div>
@@ -90,7 +82,7 @@ function App() {
                   </div>
                   <OrderList 
                     isDark={isDark} 
-                    searchTerm={searchTerm} 
+                    searchTerm={searchTerm}
                   />
                 </div>
               ) : (
@@ -105,13 +97,14 @@ function App() {
               )}
             </main>
           </div>
-
-          <NotificationPanel 
-            isDark={isDark} 
-            show={showNotifications}
-            onClose={() => setShowNotifications(false)}
-          />
         </div>
+
+        {/* Notification Panel */}
+        <NotificationPanel
+          isDark={isDark}
+          show={showNotifications}
+          onClose={() => setShowNotifications(false)}
+        />
       </div>
     </ThemeProvider>
   );
