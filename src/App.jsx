@@ -87,7 +87,10 @@ function App() {
               ) : (
                 <div className="text-center py-12">
                   <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                    {activeView.charAt(0).toUpperCase() + activeView.slice(1).replace('-', ' ')}
+                    {activeView 
+                      ? activeView.charAt(0).toUpperCase() + activeView.slice(1).replace('-', ' ')
+                      : 'Dashboard'
+                    }                  
                   </h1>
                   <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                     This view is under construction.
@@ -102,7 +105,6 @@ function App() {
         <NotificationPanel
           isDark={isDark}
           show={showNotifications}
-          onClose={() => setShowNotifications(false)}
         />
       </div>
     </ThemeProvider>

@@ -1,13 +1,13 @@
 import { X } from 'lucide-react';
 import { notifications, activities, contacts } from '../data/constants';
 
-const NotificationPanel = ({ isDark, show, onClose }) => {
+const NotificationPanel = ({ isDark, show }) => {
 
   if (!show) return null;
 
   return (
     <div className={`fixed right-0 top-0 h-full w-96 ${
-              isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+              isDark ? 'bg-black border-gray-700' : 'bg-white border-gray-200'
             } border rounded-xl shadow-xl z-50 transform transition-all duration-300 ease-out animate-slide-in overflow-hidden`}>
 
       <div className="p-6 overflow-y-auto h-full pb-20">

@@ -28,7 +28,7 @@ const OrderList = ({ isDark }) => {
   return (
     <div className="space-y-6">
       <div className={`${isDark? 'bg-black': 'bg-white'} rounded-xl`}>
-        <div className={`p-3 border-b ${isDark ? 'border-slate-700 bg-slate-900' : 'border-gray-200 bg-gray-100' }`}>
+        <div className={`p-3 border-b ${isDark ? 'border-slate-700 bg-[rgba(255,255,255,0.1)]' : 'border-gray-200 bg-gray-100' }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button className={`flex items-center space-x-2 px-4 py-2 ${isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-50' } rounded-lg transition-colors duration-150`}>
@@ -173,7 +173,7 @@ const OrderList = ({ isDark }) => {
                   onClick={() => setCurrentPage(page)}
                   className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors duration-150 ${
                     currentPage === page
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-slate-500/50 text-white'
                       :  isDark
                         ? "text-gray-400 hover:bg-slate-700"
                         : "text-gray-600 hover:bg-gray-100"
