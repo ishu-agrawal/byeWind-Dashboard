@@ -21,7 +21,7 @@ function App() {
     }
   });
   
-  const [activeView, setActiveView] = useState('ecommerce');
+  const [activeView, setActiveView] = useState('default');
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -45,7 +45,7 @@ function App() {
 
   return (
     <ThemeProvider value={{ isDark, toggleTheme }}>
-      <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-200`}>
+      <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'} transition-colors duration-200`}>
         <div className="flex">
           <Sidebar 
             activeView={activeView} 
@@ -82,7 +82,6 @@ function App() {
                   </div>
                   <OrderList 
                     isDark={isDark} 
-                    searchTerm={searchTerm}
                   />
                 </div>
               ) : (

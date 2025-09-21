@@ -1,253 +1,192 @@
-import React, { useState, useMemo } from 'react';
-import { Plus, Filter, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
-import { ordersData } from '../data/constants';
+import { useState } from 'react';
+import { Search, Plus, ListFilterPlus, ChevronLeft, ChevronRight, MoreHorizontal, ArrowDownUp } from 'lucide-react';
+import { orders } from '../data/constants';
 
-const OrderList = ({ isDark, searchTerm }) => {
+const OrderList = ({ isDark }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const itemsPerPage = 5;
+  const [sortField, setSortField] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
 
-  const filteredOrders = useMemo(() => {
-    return ordersData.filter(order => {
-      const matchesSearch = order.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          order.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          order.id.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesSearch;
-    });
-  }, [searchTerm]);
+  const duplicatedOrders = [...orders, ...orders];
 
-  const sortedOrders = useMemo(() => {
-    if (!sortConfig.key) return filteredOrders;
-    
-    return [...filteredOrders].sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === 'asc' ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === 'asc' ? 1 : -1;
-      }
-      return 0;
-    });
-  }, [filteredOrders, sortConfig]);
-
-  const paginatedOrders = sortedOrders.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const filteredOrders = duplicatedOrders.filter(order =>
+    order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
-
-  const handleSort = (key) => {
-    setSortConfig(prev => ({
-      key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
-    }));
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      'Complete': 'text-green-700 bg-green-100 border-green-200',
-      'In Progress': 'text-blue-700 bg-blue-100 border-blue-200',
-      'Pending': 'text-yellow-700 bg-yellow-100 border-yellow-200',
-      'Approved': 'text-purple-700 bg-purple-100 border-purple-200',
-      'Rejected': 'text-red-700 bg-red-100 border-red-200'
-    };
-    return colors[status] || 'text-gray-700 bg-gray-100 border-gray-200';
-  };
-
-  const getUserInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
-
-  const getUserColor = (name) => {
-    const colors = [
-      'bg-blue-500', 'bg-green-500', 'bg-purple-500', 
-      'bg-pink-500', 'bg-indigo-500', 'bg-red-500'
-    ];
-    const index = name.length % colors.length;
-    return colors[index];
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
   };
 
   return (
-    <div className="card p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Order List
-        </h2>
-        <div className="flex items-center space-x-3">
-          <button className={`btn btn-secondary p-2 hover:scale-105 active:scale-95 transition-transform`}>
-            <Plus className="w-4 h-4" />
-          </button>
-          <button className={`btn btn-secondary p-2 hover:scale-105 active:scale-95 transition-transform`}>
-            <Filter className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-              {[
-                { key: 'id', label: 'Order ID' },
-                { key: 'user', label: 'User' },
-                { key: 'project', label: 'Project' },
-                { key: 'address', label: 'Address' },
-                { key: 'date', label: 'Date' },
-                { key: 'status', label: 'Status' },
-                { key: 'actions', label: 'Actions' }
-              ].map((header) => (
-                <th
-                  key={header.key}
-                  className={`text-left py-3 px-4 font-medium ${
-                    isDark ? 'text-gray-300' : 'text-gray-600'
-                  } ${
-                    header.key !== 'actions' ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors' : ''
-                  }`}
-                  onClick={() => header.key !== 'actions' && handleSort(header.key)}
-                >
-                  <div className="flex items-center space-x-2">
-                    <span>{header.label}</span>
-                    {sortConfig.key === header.key && (
-                      <span className="text-blue-500">
-                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                      </span>
-                    )}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedOrders.map((order, index) => (
-              <tr
-                key={order.id}
-                className={`border-b ${
-                  isDark ? 'border-gray-700' : 'border-gray-200'
-                } hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group`}
-              >
-                <td className="py-4 px-4">
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-blue-600 transition-colors`}>
-                    {order.id}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 ${getUserColor(order.user)} rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                      <span className="text-white font-medium text-sm">
-                        {getUserInitials(order.user)}
-                      </span>
-                    </div>
-                    <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-blue-600 transition-colors`}>
-                      {order.user}
-                    </span>
-                  </div>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`${isDark ? 'text-gray-300' : 'text-gray-600'} group-hover:text-blue-600 transition-colors`}>
-                    {order.project}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                    {order.address}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {order.date}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)} group-hover:scale-105 transition-transform`}>
-                    {order.status}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <button className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors hover:scale-110 active:scale-95 ${
-                    isDark ? 'text-gray-400' : 'text-gray-500'
-                  }`}>
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-          Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, sortedOrders.length)} of {sortedOrders.length} results
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          {/* Previous Button */}
-          <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className={`flex items-center px-3 py-2 rounded-lg border transition-all ${
-              currentPage === 1
-                ? 'border-gray-200 text-gray-400 cursor-not-allowed'
-                : isDark 
-                  ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:scale-105' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:scale-105'
-            }`}
-          >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Previous
-          </button>
-
-          {/* Page Numbers */}
-          <div className="flex items-center space-x-1">
-            {[...Array(Math.min(totalPages, 5))].map((_, i) => {
-              let pageNum;
-              if (totalPages <= 5) {
-                pageNum = i + 1;
-              } else if (currentPage <= 3) {
-                pageNum = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                pageNum = totalPages - 4 + i;
-              } else {
-                pageNum = currentPage - 2 + i;
-              }
-              
-              return (
-                <button
-                  key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={`px-3 py-2 rounded-lg border transition-all hover:scale-105 active:scale-95 ${
-                    currentPage === pageNum
-                      ? 'bg-blue-600 border-blue-600 text-white shadow-lg'
-                      : isDark 
-                        ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
+    <div className="space-y-6">
+      <div className={`${isDark? 'bg-black': 'bg-white'} rounded-xl`}>
+        <div className={`p-3 border-b ${isDark ? 'border-slate-700 bg-slate-900' : 'border-gray-200 bg-gray-100' }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button className={`flex items-center space-x-2 px-4 py-2 ${isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-50' } rounded-lg transition-colors duration-150`}>
+                <Plus className="w-5 h-5" />
+              </button>
+              <button className={`flex items-center space-x-2 px-4 py-2 ${isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-50' } rounded-lg transition-colors duration-150`}>
+                <ListFilterPlus className="w-5 h-5" />
+              </button>
+              <button className={`flex items-center space-x-2 px-4 py-2 ${isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-50' } rounded-lg transition-colors duration-150`}>
+                <ArrowDownUp className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-64 pl-10 pr-4 py-2 ${isDark ? 'bg-slate-700/50 placeholder-gray-400 focus:bg-slate-600' : 'bg-gray-50 placeholder-gray-500 focus:bg-white'} border-0 rounded-lg text-sm  focus:ring-2 focus:ring-blue-500 transition-all duration-200`}
+              />
+            </div>
           </div>
+        </div>
 
-          {/* Next Button */}
-          <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className={`flex items-center px-3 py-2 rounded-lg border transition-all ${
-              currentPage === totalPages
-                ? 'border-gray-200 text-gray-400 cursor-not-allowed'
-                : isDark 
-                  ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:scale-105' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:scale-105'
-            }`}
-          >
-            Next
-            <ChevronRight className="w-4 h-4 ml-1" />
-          </button>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className={`${isDark ? 'bg-black' : 'bg-gray-50'}`}>
+              <tr>
+                <th className="w-8 px-6 py-4">
+                  <input type="checkbox" className={`rounded ${isDark ? 'border-slate-600' : 'border-gray-300'}`} />
+                </th>
+                <th className="px-6 py-4 text-left">
+                  <button
+                    onClick={() => handleSort('id')}
+                    className={`text-xs font-medium ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} tracking-wider`}
+                  >
+                    Order ID
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left">
+                  <button
+                    onClick={() => handleSort('user')}
+                    className={`text-xs font-medium ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} tracking-wider`}
+                  >
+                    User
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left">
+                  <button
+                    onClick={() => handleSort('project')}
+                    className={`text-xs font-medium ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} tracking-wider`}
+                  >
+                    Project
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left">
+                  <button
+                    onClick={() => handleSort('address')}
+                    className={`text-xs font-medium ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} tracking-wider`}
+                  >
+                    Address
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left">
+                  <button
+                    onClick={() => handleSort('date')}
+                    className={`text-xs font-medium ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} tracking-wider`}
+                  >
+                    Date
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left">
+                  <button
+                    onClick={() => handleSort('status')}
+                    className={`text-xs font-medium ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} tracking-wider`}
+                  >
+                    Status
+                  </button>
+                </th>
+                <th className="w-8 px-6 py-4"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
+              {filteredOrders.map((order, index) => (
+                <tr 
+                  key={`${order.id}-${index}`}
+                  className={`${isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-100' } transition-colors duration-150`}
+                >
+                  <td className="px-6 py-4">
+                    <input type="checkbox" className={`rounded ${isDark ? 'border-slate-600' : 'border-gray-300'}`} />
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>#{order.id}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium ${order.user.color}`}>
+                        {order.user.name.charAt(0)}
+                      </div>
+                      <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{order.user.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{order.project}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{order.address}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{order.date}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${order.statusColor}`}>
+                      {order.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <button className={`p-2 ${isDark ? 'hover:bg-slate-600' : 'hover:bg-gray-100'} rounded-lg transition-colors duration-150`}>
+                      <MoreHorizontal className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className={`px-6 py-4 border-t ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+          <div className="flex items-center justify-between">
+            <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              Showing 1 to 10 of {filteredOrders.length} results
+            </div>
+            <div className="flex items-center space-x-1">
+              <button className={`p-2 ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'} rounded-lg transition-colors duration-150`}>
+                <ChevronLeft className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+              </button>
+              {[1, 2, 3, 4, 5].map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors duration-150 ${
+                    currentPage === page
+                      ? 'bg-blue-600 text-white'
+                      :  isDark
+                        ? "text-gray-400 hover:bg-slate-700"
+                        : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button className={`p-2 ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100' } rounded-lg transition-colors duration-150`}>
+                <ChevronRight className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
