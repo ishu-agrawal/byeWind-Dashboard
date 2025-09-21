@@ -3,61 +3,9 @@ import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
 } from 'recharts';
-import { TrendingUp, TrendingDown } from 'lucide-react';
 import { revenueData, projectionData, salesData, topProducts } from '../data/constants';
-
-const StatCard = ({ title, value, change, changeType, isDark }) => (
-  <div className={`p-6 rounded-xl ${
-    isDark ? 'bg-[rgba(255,255,255,0.1)] border-gray-700' : 'bg-white border-gray-100'
-  } border transition-all duration-200 hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 group cursor-pointer`}>
-    <div className="flex items-center justify-between mb-3">
-      <h3 className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-        {title}
-      </h3>
-      {changeType && (
-        <div className={`flex items-center space-x-1 ${
-          changeType === 'up' ? 'text-green-500' : 'text-red-500'
-        } group-hover:scale-110 transition-transform`}>
-          {changeType === 'up' ? (
-            <TrendingUp className="w-4 h-4" />
-          ) : (
-            <TrendingDown className="w-4 h-4" />
-          )}
-        </div>
-      )}
-    </div>
-    <div className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-blue-600 transition-colors`}>
-      {value}
-    </div>
-    <div className={`flex items-center text-sm ${
-      changeType === 'up' 
-        ? 'text-green-500' 
-        : changeType === 'down' 
-          ? 'text-red-500' 
-          : isDark ? 'text-gray-400' : 'text-gray-500'
-    }`}>
-      <span className="font-medium">{change}</span>
-    </div>
-  </div>
-);
-
-const CustomTooltip = ({ active, payload, label, isDark }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className={`${
-        isDark ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-900'
-      } p-3 border rounded-lg shadow-lg animate-fade-in`}>
-        <p className="font-medium text-sm">{`${label}`}</p>
-        {payload.map((entry, index) => (
-          <p key={index} style={{ color: entry.color }} className="text-sm">
-            {`${entry.name}: ${typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}`}
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
+import StatCard from './StatCard';
+import CustomTooltip from './CustomTooltip';
 
 const Dashboard = ({ isDark }) => {
   return (
@@ -65,12 +13,13 @@ const Dashboard = ({ isDark }) => {
       {/* First Row: Stats Cards + Projections vs Actuals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Stats Cards in 2x2 Grid */}
-        <div className="grid grid-cols-2 gap-4 h-full">
+        <div className="grid grid-cols-2 gap-4 h-full ">
           <StatCard 
             title="Customers" 
             value="3,781" 
             change="+11.01%" 
             changeType="up"
+            cardType="customers"
             isDark={isDark}
           />
           <StatCard 
@@ -78,6 +27,7 @@ const Dashboard = ({ isDark }) => {
             value="1,219" 
             change="-0.03%" 
             changeType="down"
+            cardType="orders"
             isDark={isDark}
           />
           <StatCard 
@@ -85,6 +35,7 @@ const Dashboard = ({ isDark }) => {
             value="$695" 
             change="+15.03%" 
             changeType="up"
+            cardType="revenue"
             isDark={isDark}
           />
           <StatCard 
@@ -92,12 +43,13 @@ const Dashboard = ({ isDark }) => {
             value="30.1%" 
             change="+6.08%" 
             changeType="up"
+            cardType="growth"
             isDark={isDark}
           />
         </div>
 
         {/* Projections vs Actuals */}
-        <div className={`p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.1)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
+        <div className={`p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.2)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Projections vs Actuals
           </h3>
@@ -126,8 +78,8 @@ const Dashboard = ({ isDark }) => {
               />
               <Bar 
                 dataKey="value" 
-                fill="#3B82F6" 
-                radius={[4, 4, 0, 0]}
+                fill="#6366F1" 
+                radius={[6, 6, 0, 0]}
                 name="Projections"
               />
             </BarChart>
@@ -138,7 +90,7 @@ const Dashboard = ({ isDark }) => {
       {/* Second Row: Revenue Chart + Revenue by Location */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Chart - 2 columns */}
-        <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.1)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
+        <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.2)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
           <div className="flex items-center justify-between mb-6">
             <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Revenue
@@ -158,7 +110,7 @@ const Dashboard = ({ isDark }) => {
               </div>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={240}>
             <LineChart data={revenueData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#E5E7EB'} />
               <XAxis 
@@ -177,7 +129,7 @@ const Dashboard = ({ isDark }) => {
                 tick={{ fill: isDark ? '#9CA3AF' : '#6B7280' }}
                 tickFormatter={(value) => `${(value / 1000)}K`}
                 domain={[0, 80000]}
-                ticks={[0, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000]}
+                ticks={[0, 20000, 40000, 60000, 80000]}
               />
               <Tooltip 
                 content={<CustomTooltip isDark={isDark} />}
@@ -190,9 +142,9 @@ const Dashboard = ({ isDark }) => {
                 type="monotone" 
                 dataKey="current" 
                 stroke="#000000" 
-                strokeWidth={3} 
+                strokeWidth={2} 
                 dot={false}
-                activeDot={{ r: 4, fill: '#000000' }}
+                activeDot={{ r: 6, fill: '#000000', stroke: '#ffffff', strokeWidth: 2 }}
                 name="Current Week"
               />
               <Line 
@@ -200,7 +152,7 @@ const Dashboard = ({ isDark }) => {
                 dataKey="previous" 
                 stroke="#9CA3AF" 
                 strokeWidth={2} 
-                strokeDasharray="8 4" 
+                strokeDasharray="6 4" 
                 dot={false}
                 name="Previous Week"
               />
@@ -209,26 +161,13 @@ const Dashboard = ({ isDark }) => {
         </div>
 
         {/* Revenue by Location - 1 column */}
-        <div className={`p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.1)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
+        <div className={`p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.2)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Revenue by Location
           </h3>
           
           {/* World Map with dots */}
           <div className={`relative mb-6 h-20 bg-gradient-to-br ${isDark ? 'from-gray-700 to-gray-600' : 'from-blue-50 to-gray-100'} rounded-lg overflow-hidden`}>
-            {/* World map background */}
-            <div className="absolute inset-0 opacity-20">
-              <svg viewBox="0 0 200 100" className="w-full h-full">
-                <path d="M20,40 Q30,35 40,40 L50,45 Q60,40 70,45 L80,40 Q90,45 100,40 L110,45 Q120,40 130,45 L140,40 Q150,45 160,40 L170,45 Q180,40 190,45" 
-                      stroke={isDark ? '#4B5563' : '#9CA3AF'} 
-                      strokeWidth="1" 
-                      fill="none"/>
-                <path d="M10,60 Q25,55 40,60 L60,65 Q80,60 100,65 L120,60 Q140,65 160,60 L180,65" 
-                      stroke={isDark ? '#4B5563' : '#9CA3AF'} 
-                      strokeWidth="1" 
-                      fill="none"/>
-              </svg>
-            </div>
             {/* Location dots */}
             <div className="absolute top-3 left-8 w-2 h-2 bg-blue-500 rounded-full shadow-sm"></div>
             <div className="absolute top-4 right-12 w-2 h-2 bg-green-500 rounded-full shadow-sm"></div>
@@ -243,7 +182,7 @@ const Dashboard = ({ isDark }) => {
               { city: 'Sydney', amount: '25K', color: 'bg-yellow-500' },
               { city: 'Singapore', amount: '61K', color: 'bg-purple-500' }
             ].map((location, index) => (
-              <div key={index} className={`flex items-center justify-between group cursor-pointer py-1 px-2 rounded-md ${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-100'} transition-colors duration-200`}>
+              <div key={index} className={`flex items-center justify-between group cursor-pointer py-1 px-2 rounded-md ${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} transition-colors duration-200`}>
                 <div className="flex items-center space-x-3">
                   <div className={`w-2 h-2 rounded-full ${location.color} group-hover:scale-125 transition-transform`}></div>
                   <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} group-hover:text-blue-600 transition-colors`}>
@@ -262,13 +201,13 @@ const Dashboard = ({ isDark }) => {
       {/* Third Row: Top Selling Products + Total Sales */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Top Selling Products - 2 columns */}
-        <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.1)] border-gray-700 hover:shadow-gray-900/50' : 'bg-white border-gray-100 hover:shadow-md hover:shadow-gray-100/50'} border  transition-all duration-200`}>
+        <div className={`lg:col-span-2 p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.2)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Top Selling Products
           </h3>
           
           {/* Header */}
-          <div className={`grid grid-cols-4 gap-4 pb-3 border-b ${isDark ? 'border-gray-700 text-gray-400' : 'border-gray-200 text-gray-500'} text-sm font-medium `}>
+          <div className={`grid grid-cols-4 gap-4 pb-3 border-b ${isDark ? 'border-gray-700 text-gray-400' : 'border-gray-200 text-gray-500'} text-sm font-medium`}>
             <span>Name</span>
             <span>Price</span>
             <span>Quantity</span>
@@ -278,7 +217,7 @@ const Dashboard = ({ isDark }) => {
           {/* Products */}
           <div className="space-y-2 mt-4">
             {topProducts.map((product, index) => (
-              <div key={index} className={`grid grid-cols-4 gap-4 py-3 px-2 ${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-100'} rounded-lg transition-colors group cursor-pointer`}>
+              <div key={index} className={`grid grid-cols-4 gap-4 py-3 px-2 ${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} rounded-lg transition-colors group cursor-pointer`}>
                 <div>
                   <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-blue-600 transition-colors text-sm`}>
                     {product.name}
@@ -305,7 +244,7 @@ const Dashboard = ({ isDark }) => {
         </div>
 
         {/* Total Sales - 1 column */}
-        <div className={`p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.1)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
+        <div className={`p-6 rounded-xl ${isDark ? 'bg-[rgba(255,255,255,0.2)] border-gray-700' : 'bg-white border-gray-100'} border hover:shadow-md hover:shadow-gray-100/50 dark:hover:shadow-gray-900/50 transition-all duration-200`}>
           <h3 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Total Sales
           </h3>
@@ -317,9 +256,9 @@ const Dashboard = ({ isDark }) => {
                     data={salesData}
                     cx={90}
                     cy={90}
-                    innerRadius={50}
-                    outerRadius={75}
-                    paddingAngle={3}
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={2}
                     dataKey="value"
                     startAngle={90}
                     endAngle={450}
@@ -338,23 +277,18 @@ const Dashboard = ({ isDark }) => {
                   />
                 </PieChart>
               </ResponsiveContainer>
-              {/* Center percentage */}
+              {/* Center percentage - WHITE background as per Figma */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`px-3 py-2 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-100'} shadow-sm`}>
-                  <p className={`text-sm font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>38.6%</p>
+                <div className="bg-white px-3 py-2 rounded-lg shadow-sm">
+                  <p className="text-sm font-bold text-gray-900">38.6%</p>
                 </div>
               </div>
             </div>
             
             {/* Legend */}
             <div className="w-full space-y-3">
-              {[
-                { name: 'Direct', value: '$300.56', color: '#3B82F6' },
-                { name: 'Affiliate', value: '$135.18', color: '#10B981' },
-                { name: 'Sponsored', value: '$154.02', color: '#F59E0B' },
-                { name: 'E-mail', value: '$48.96', color: '#EF4444' }
-              ].map((item, index) => (
-                <div key={index} className={`flex items-center justify-between ${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-100'} px-2 py-1 rounded-md transition-colors cursor-pointer`}>
+              {salesData.map((item, index) => (
+                <div key={index} className={`flex items-center justify-between ${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} px-2 py-1 rounded-md transition-colors cursor-pointer`}>
                   <div className="flex items-center space-x-3">
                     <div 
                       className="w-3 h-3 rounded-full" 
