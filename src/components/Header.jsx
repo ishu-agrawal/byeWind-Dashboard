@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, Settings, Sun, Moon, X } from 'lucide-react';
+import { Search, Bell, Settings, Sun, Moon, X, History, Star, PanelLeft} from 'lucide-react';
 
 const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotifications, setShowNotifications }) => {
   const notificationRef = useRef(null);
@@ -17,9 +17,33 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
   }, []);
 
   return (
-    <header className={`h-16 ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-b px-6 flex items-center justify-between transition-colors duration-200 sticky top-0 z-40`}>
+    <header className={`h-16 ${isDark ? 'bg-black border-gray-800' : 'bg-white border-gray-200'} border-b px-6 flex items-center justify-between transition-colors duration-200 sticky top-0 z-40`}>      
       {/* Breadcrumb */}
       <div className="flex items-center space-x-4">
+        {/* PanelLeft */}
+        <button 
+          className={`p-2 rounded-lg ${
+            isDark 
+              ? 'hover:bg-gray-700 text-gray-300' 
+              : 'hover:bg-gray-200 text-gray-600'
+          } transition-all duration-200 hover:scale-105 active:scale-95`}
+          aria-label="Settings"
+        >
+          <PanelLeft className="w-5 h-5" />
+        </button>
+        
+      {/* Star */}
+        <button 
+          className={`p-2 rounded-lg ${
+            isDark 
+              ? 'hover:bg-gray-700 text-gray-300' 
+              : 'hover:bg-gray-200 text-gray-600'
+          } transition-all duration-200 hover:scale-105 active:scale-95`}
+          aria-label="Settings"
+        >
+          <Star className="w-5 h-5" />
+        </button>
+
         <div className="flex items-center space-x-2">
           <span className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Dashboards
@@ -43,8 +67,8 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
             onChange={(e) => setSearchTerm(e.target.value)}
             className={`pl-10 pr-4 py-2 rounded-lg border ${
               isDark 
-                ? 'bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500' 
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500'
+                ? 'bg-gray-900 border-gray-900 text-white placeholder-gray-400 focus:border-blue-500' 
+                : 'bg-gray-100 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500'
             } focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 w-64`}
           />
         </div>
@@ -54,8 +78,8 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
           onClick={toggleTheme}
           className={`p-2 rounded-lg ${
             isDark 
-              ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' 
-              : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+              ? 'hover:bg-gray-700 text-gray-300' 
+              : 'hover:bg-gray-200 text-gray-600'
           } transition-all duration-200 hover:scale-105 active:scale-95`}
           aria-label="Toggle theme"
         >
@@ -66,14 +90,26 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
           )}
         </button>
 
+        {/* History */}
+        <button 
+          className={`p-2 rounded-lg ${
+            isDark 
+              ? 'hover:bg-gray-700 text-gray-300' 
+              : 'hover:bg-gray-200 text-gray-600'
+          } transition-all duration-200 hover:scale-105 active:scale-95`}
+          aria-label="Settings"
+        >
+          <History className="w-5 h-5" />
+        </button>
+
         {/* Notifications */}
         <div className="relative" ref={notificationRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
             className={`p-2 rounded-lg ${
               isDark 
-                ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                ? 'hover:bg-gray-700 text-gray-300' 
+                : 'hover:bg-gray-200 text-gray-600'
             } transition-all duration-200 hover:scale-105 active:scale-95 relative`}
             aria-label="Notifications"
           >
@@ -82,16 +118,16 @@ const Header = ({ isDark, toggleTheme, searchTerm, setSearchTerm, showNotificati
           </button>
         </div>
 
-        {/* Settings */}
+        {/* PanelLeft */}
         <button 
           className={`p-2 rounded-lg ${
             isDark 
-              ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' 
-              : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+              ? 'hover:bg-gray-700 text-gray-300' 
+              : 'hover:bg-gray-200 text-gray-600'
           } transition-all duration-200 hover:scale-105 active:scale-95`}
           aria-label="Settings"
         >
-          <Settings className="w-5 h-5" />
+          <PanelLeft className="w-5 h-5" />
         </button>
       </div>
     </header>
