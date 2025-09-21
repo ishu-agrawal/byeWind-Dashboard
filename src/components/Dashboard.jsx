@@ -138,13 +138,13 @@ const Dashboard = ({ isDark }) => {
                   strokeDasharray: '3 3'
                 }}
               />
-              <Line 
+             <Line 
                 type="monotone" 
                 dataKey="current" 
-                stroke="#000000" 
+                stroke={isDark ? "#ffffff" : "#000000"} 
                 strokeWidth={2} 
                 dot={false}
-                activeDot={{ r: 6, fill: '#000000', stroke: '#ffffff', strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: "#000000", stroke: "#ffffff", strokeWidth: 2 }}
                 name="Current Week"
               />
               <Line 
