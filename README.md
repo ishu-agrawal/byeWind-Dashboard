@@ -2,6 +2,8 @@
 
 A modern, responsive dashboard built with React 19, Vite 7, and Tailwind CSS v4. This project recreates the ByeWind dashboard design with pixel-perfect accuracy, complete with interactive features, dark/light theme toggle, and smooth animations.
 
+Live link: https://ishu-agrawal.github.io/byeWind-Dashboard/
+
 ## 🌟 Features
 
 ### **Core Functionality**
